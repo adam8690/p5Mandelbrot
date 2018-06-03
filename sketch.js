@@ -1,8 +1,13 @@
 var maxIter = 100;
 var zoom = 0.7;
-var xOffset = -0.5;
+var xOffset = 0;
 var yOffset = 0;
+var maxY = 2;
+var maxX = 2;
+var minY = -2;
+var minX = -2;
 var y = 0;
+
 
 class Complex{
   constructor(real, imaginary){
@@ -13,7 +18,8 @@ class Complex{
 
 
 function setup() {
-  var canvas = createCanvas(950, 950);
+  var canvas = createCanvas(600, 600);
+  canvas.mousePressed(zoomIn);
 }
 
 function draw() {
@@ -22,10 +28,10 @@ function draw() {
       var iterations = mandelbrot();
       if(iterations < maxIter){
         var mapColour = map(iterations, 0, maxIter, 0, 255);
-        stroke(mapColour);
+        stroke(mapColour, mapColour, mapColour);
       }
       else{
-        stroke(0)
+        stroke(255)
       }
       point(x, y);
     }
@@ -36,8 +42,8 @@ function draw() {
 // f(x) = x^2 + c 
 function mandelbrot(){
   var result = new Complex(0.0, 0.0);
-  var mapHeight = map(y, 0, height, 2.0 * zoom + yOffset, -2.0 * zoom + yOffset);
-  var mapWidth = map(x, 0, width, -2.0 * zoom + xOffset, 2.0 * zoom + xOffset);
+  var mapHeight = map(y, 0, height, maxY * zoom + yOffset, minY * zoom + yOffset);
+  var mapWidth = map(x, 0, width, minX * zoom + xOffset, maxX * zoom + xOffset);
   var c = new Complex(mapWidth, mapHeight);
 
   for (var i = 0; i <= maxIter; i++){
@@ -72,5 +78,16 @@ function squareComplex(complexNum){
 
 function getMagnitude(complexNum){
   return sqrt((Math.pow(complexNum.real, 2)) + (Math.pow(complexNum.imaginary, 2)));
+}
+
+function zoomIn(){
+
+  // TODO set the offset so that the graph recenters on where the mouse was clicked.
+
+  minX = minX * zoom;
+  minY = minY * zoom;
+  maxX = maxX * zoom;
+  maxY = maxY * zoom;
+  y = 0;
 }
 
